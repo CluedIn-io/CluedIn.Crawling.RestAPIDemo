@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using CluedIn.Core.Providers;
 using CluedIn.Crawling.Rest.Core;
+using CluedIn.Crawling.Rest.Core.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RestSharp;
@@ -88,15 +89,15 @@ namespace CluedIn.Crawling.Rest.Infrastructure
                     log.LogError(e.Message);
                     break;
                 }
-                var followersJson = string.Empty;
+                var responseJson = string.Empty;
                 using (response)
                 {
                     using (var reader = new StreamReader(response.GetResponseStream()))
                     {
-                        followersJson = reader.ReadToEnd();
+                        responseJson = reader.ReadToEnd();
                     }
                 }
-                var followers = JsonConvert.DeserializeObject<User>(followersJson);
+                var followers = JsonConvert.DeserializeObject<User>(responseJson);
                 foreach (var item in followers.users)
                 {
                     yield return item;
