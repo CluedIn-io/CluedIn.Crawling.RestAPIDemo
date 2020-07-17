@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Rest.Infrastructure\Crawling.Rest.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\cluedin.png" />
+    <EmbeddedResource Include="RestProviderComponent.config">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CluedIn.Core" />
+    <PackageReference Include="CluedIn.Core.Agent" />
+    <PackageReference Include="CluedIn.Crawling" />
+    <PackageReference Include="CluedIn.CrawlerIntegrationTesting" />
+    <PackageReference Include="CluedIn.Server" />
+    <PackageReference Include="CluedIn.Server.Common.WebApi" />
+  </ItemGroup>
+</Project>
