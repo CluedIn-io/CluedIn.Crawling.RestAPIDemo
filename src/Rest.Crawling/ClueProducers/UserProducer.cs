@@ -11,7 +11,7 @@ using CluedIn.Crawling.Rest.Vocabularies;
 
 namespace CluedIn.Crawling.Rest.ClueProducers
 {
-    public class UserProducer : BaseClueProducer<User>
+    public class UserProducer : BaseClueProducer<Users>
     {
         private readonly IClueFactory _factory;
 
@@ -22,7 +22,7 @@ namespace CluedIn.Crawling.Rest.ClueProducers
 
             _factory = factory;
         }
-        protected override Clue MakeClueImpl([NotNull] User input, Guid accountId)
+        protected override Clue MakeClueImpl([NotNull] Users input, Guid accountId)
         {
             if (input == null)
                 throw new ArgumentNullException(nameof(input));

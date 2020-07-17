@@ -6,6 +6,11 @@ namespace CluedIn.Crawling.Rest.Core.Models
 {
     public class User
     {
+        public List<Users> users { get; set; }
+        public string Cursor { get; set; }
+    }
+    public class Users
+    {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Id { get; set; }

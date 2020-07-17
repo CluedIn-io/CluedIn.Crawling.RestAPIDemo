@@ -75,7 +75,7 @@ namespace CluedIn.Crawling.Rest.Infrastructure
             long cursor = -1;
             while (cursor != 0)
             {
-               
+
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Headers.Add("Authorization", string.Format("bearer", token));
                 request.Method = "Get";
@@ -97,12 +97,13 @@ namespace CluedIn.Crawling.Rest.Infrastructure
                         responseJson = reader.ReadToEnd();
                     }
                 }
-                var followers = JsonConvert.DeserializeObject<User>(responseJson);
-                foreach (var item in followers.users)
+                var users = JsonConvert.DeserializeObject<User>(responseJson);
+                foreach (var item in users.users)
                 {
                     yield return item;
                 }
-                cursor = long.Parse(followers.next_cursor);
+                cursor = long.Parse(users.Cursor);
             }
         }
+    }
 }
