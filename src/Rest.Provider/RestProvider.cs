@@ -78,6 +78,7 @@ namespace CluedIn.Provider.Rest
                 //TODO add the transformations from specific CrawlJobData object to dictionary
                 // add tests to GetHelperConfigurationBehaviour.cs
                 dictionary.Add(RestConstants.KeyName.Url, restCrawlJobData.Url);
+                dictionary.Add(RestConstants.KeyName.Token, restCrawlJobData.Token);
             }
 
             return await Task.FromResult(dictionary);
