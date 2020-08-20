@@ -1,17 +1,17 @@
-# CluedIn.Crawling.Rest
+# CluedIn.Crawling.ExampleRest
 
-CluedIn crawler for Rest.
+CluedIn crawler for ExampleRest.
 
-[![Build Status](https://dev.azure.com/CluedIn-io/CluedIn%20Crawlers/_apis/build/status/CluedIn-io.CluedIn.Crawling.Rest?branchName=master)](https://dev.azure.com/CluedIn-io/CluedIn%20Crawlers/_build/latest?definitionId=TODO&branchName=master)
+[![Build Status](https://dev.azure.com/CluedIn-io/CluedIn%20Crawlers/_apis/build/status/CluedIn-io.CluedIn.Crawling.ExampleRest?branchName=master)](https://dev.azure.com/CluedIn-io/CluedIn%20Crawlers/_build/latest?definitionId=TODO&branchName=master)
 ------
 
 ## Overview
 
-This repository contains the code and associated tests for the Rest crawler.
+This repository contains the code and associated tests for the ExampleRest crawler.
 
 ## Working with the Code
 
-Load [Crawling.Rest.sln](.\Crawling.Rest.sln) in Visual Studio or your preferred development IDE.
+Load [Crawling.ExampleRest.sln](.\Crawling.ExampleRest.sln) in Visual Studio or your preferred development IDE.
 
 ### Running Tests
 
@@ -48,7 +48,7 @@ docker-compose logs wiremock
 
 ## References
 
-* [Rest](TODO)
+* [ExampleRest](TODO)
 
 ### Tooling
 
