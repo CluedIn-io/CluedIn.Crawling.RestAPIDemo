@@ -5,6 +5,9 @@
     <ProjectReference Include="..\..\..\src\Rest.Infrastructure\Crawling.Rest.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\src\Rest.Provider\Provider.Rest.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CluedIn.CrawlerIntegrationTesting" />
+  </ItemGroup>
 
   <!--
     App.config needs to be copied under dll of _host_ process

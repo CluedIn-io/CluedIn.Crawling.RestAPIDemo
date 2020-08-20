@@ -42,6 +42,8 @@ namespace CluedIn.Provider.Rest
             { restCrawlJobData.Url = configuration[RestConstants.KeyName.Url].ToString(); }
             if (configuration.ContainsKey(RestConstants.KeyName.Token))
             { restCrawlJobData.Token = configuration[RestConstants.KeyName.Token].ToString(); }
+            if (configuration.ContainsKey(RestConstants.KeyName.NumRetries))
+            { restCrawlJobData.NumRetry = (long) configuration[RestConstants.KeyName.NumRetries]; }
 
             return await Task.FromResult(restCrawlJobData);
         }

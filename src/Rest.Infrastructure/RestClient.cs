@@ -8,6 +8,7 @@ using CluedIn.Crawling.Rest.Core;
 using CluedIn.Crawling.Rest.Core.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace CluedIn.Crawling.Rest.Infrastructure
@@ -42,15 +43,14 @@ namespace CluedIn.Crawling.Rest.Infrastructure
 
             // TODO use info from restCrawlJobData to instantiate the connection
             client.BaseUrl = new Uri(BaseUri);
+            client.AddDefaultHeader("Authorization", $"bearer {restCrawlJobData.Token}");
             client.AddDefaultParameter("api_key", restCrawlJobData.Url, ParameterType.QueryString);
         }
 
-        private async Task<T> GetAsync<T>(string url)
+        public IEnumerable<T> GetData<T>(string url)
         {
             var request = new RestRequest(url, Method.GET);
-
-            var response = await client.ExecuteTaskAsync(request);
-
+            var response = client.Execute(request);
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 var diagnosticMessage = $"Request to {client.BaseUrl}{url} failed, response {response.ErrorMessage} ({response.StatusCode})";
@@ -58,9 +58,23 @@ namespace CluedIn.Crawling.Rest.Infrastructure
                 throw new InvalidOperationException($"Communication to jsonplaceholder unavailable. {diagnosticMessage}");
             }
 
-            var data = JsonConvert.DeserializeObject<T>(response.Content);
+            JArray data;
+            try
+            {
+                data = JArray.Parse(response.Content);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error getting objects from {url}:");
+                Console.WriteLine(e.Message);
+                Console.WriteLine();
+                yield break;
+            }
 
-            return data;
+            foreach (var obj in data.Children())
+            {
+                yield return obj.ToObject<T>();
+            }
         }
 
         public AccountInformation GetAccountInformation()
@@ -70,40 +84,5 @@ namespace CluedIn.Crawling.Rest.Infrastructure
             return new AccountInformation("", "");
         }
 
-        public IEnumerable<object> Get(string url, string token)
-        {
-            long cursor = -1;
-            while (cursor != 0)
-            {
-
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Headers.Add("Authorization", string.Format("bearer", token));
-                request.Method = "Get";
-                HttpWebResponse response = null;
-                try
-                {
-                    response = (HttpWebResponse)request.GetResponse();
-                }
-                catch (Exception e)
-                {
-                    log.LogError(e.Message);
-                    break;
-                }
-                var responseJson = string.Empty;
-                using (response)
-                {
-                    using (var reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        responseJson = reader.ReadToEnd();
-                    }
-                }
-                var users = JsonConvert.DeserializeObject<User>(responseJson);
-                foreach (var item in users.users)
-                {
-                    yield return item;
-                }
-                cursor = long.Parse(users.Cursor);
-            }
-        }
     }
 }

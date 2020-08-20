@@ -11,6 +11,7 @@ namespace CluedIn.Crawling.Rest.Core
         {
             public const string Url = nameof(Url);
             public const string Token = nameof(Token);
+            public const string NumRetries = nameof(NumRetries);
         }
 
         // TODO Complete the following section

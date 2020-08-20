@@ -6,5 +6,6 @@ namespace CluedIn.Crawling.Rest.Core
     {
         public string Url { get; set; }
         public string Token { get; set; }
+        public long NumRetry { get; set; } = 1;
     }
 }

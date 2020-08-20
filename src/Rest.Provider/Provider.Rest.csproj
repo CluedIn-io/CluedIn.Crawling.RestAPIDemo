@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\Rest.Infrastructure\Crawling.Rest.Infrastructure.csproj" />
   </ItemGroup>
@@ -12,8 +12,8 @@
     <PackageReference Include="CluedIn.Core" />
     <PackageReference Include="CluedIn.Core.Agent" />
     <PackageReference Include="CluedIn.Crawling" />
-    <PackageReference Include="CluedIn.CrawlerIntegrationTesting" />
     <PackageReference Include="CluedIn.Server" />
     <PackageReference Include="CluedIn.Server.Common.WebApi" />
+    <PackageReference Include="CluedIn.Agent" />
   </ItemGroup>
 </Project>
