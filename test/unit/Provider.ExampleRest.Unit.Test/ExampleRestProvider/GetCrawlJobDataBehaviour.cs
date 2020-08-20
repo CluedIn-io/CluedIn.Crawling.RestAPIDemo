@@ -28,7 +28,7 @@ namespace CluedIn.Provider.ExampleRest.Unit.Test.ExampleRestProvider
         }
 
         [Theory]
-        [InlineAutoData(ExampleRestConstants.KeyName.Url, nameof(ExampleRestCrawlJobData.Url))]
+        [InlineAutoData(ExampleRestConstants.KeyName.NumRetry, nameof(ExampleRestCrawlJobData.NumRetry))]
         public async Task InitializesProperties(string key, string propertyName, string sampleValue, Guid organizationId, Guid userId, Guid providerDefinitionId)
         {
             var dictionary = new Dictionary<string, object>()

@@ -9,7 +9,6 @@ namespace CluedIn.Crawling.ExampleRest.Integration.Test
     {
         return new Dictionary<string, object>
         {
-            { ExampleRestConstants.KeyName.Url, "demo" },
             { ExampleRestConstants.KeyName.NumRetry, 4 }
         };
     }
