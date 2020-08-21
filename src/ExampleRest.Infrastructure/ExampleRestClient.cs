@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using CluedIn.Core;
+using System.Threading;
 
 namespace CluedIn.Crawling.ExampleRest.Infrastructure
 {
@@ -22,6 +23,7 @@ namespace CluedIn.Crawling.ExampleRest.Infrastructure
         private readonly ILogger<ExampleRestClient> log;
         private readonly IRestClient client;
         private readonly long maxTry;
+        private readonly long requestDelay;
 
         public ExampleRestClient(ILogger<ExampleRestClient> log, ExampleRestCrawlJobData examplerestCrawlJobData, IRestClient client)
         {
@@ -46,6 +48,12 @@ namespace CluedIn.Crawling.ExampleRest.Infrastructure
                 maxTry = examplerestCrawlJobData.NumRetry;
             else
                 maxTry = 1;
+
+            if (examplerestCrawlJobData.TimeBetweenRequests != 0)
+                requestDelay = examplerestCrawlJobData.TimeBetweenRequests;
+            else
+                requestDelay = 10000; // 10 seconds
+
         }
 
         public IEnumerable<JObject> FetchEndpointData(string endpoint)
@@ -74,8 +82,12 @@ namespace CluedIn.Crawling.ExampleRest.Infrastructure
                 }
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    // Fetch new token here
-
+                    // Todo: fetch new token 
+                    continue;
+                }
+                if (response.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    Thread.Sleep((int)requestDelay); // wait 10 seconds
                     continue;
                 }
                 else

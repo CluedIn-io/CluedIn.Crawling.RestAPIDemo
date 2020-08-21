@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using CluedIn.Core.Crawling;
 using CluedIn.Crawling.ExampleRest.Core;
 using CluedIn.Crawling.ExampleRest.Infrastructure.Factories;
@@ -25,33 +27,50 @@ namespace CluedIn.Crawling.ExampleRest
         {
             var restJobData = jobData as ExampleRestCrawlJobData;
 
-            if (!(jobData is ExampleRestCrawlJobData examplerestcrawlJobData))
+            if (!(jobData is ExampleRestCrawlJobData))
             {
                 throw new ArgumentException(nameof(jobData));
             }
 
-            var client = clientFactory.CreateNew(examplerestcrawlJobData);
+            var client = clientFactory.CreateNew(restJobData);
 
-            var output = new List<object>();
             foreach (var endpoint in restJobData.Endpoints)
             {
-                foreach (var obj in client.FetchEndpointData(endpoint))
+                var data = client.FetchEndpointData(endpoint);
+                var output = new List<object>();
+                foreach (var obj in data)
                 {
                     try
                     {
                         output.Add(ParseJson<User>(obj));
+                        continue;
                     }
-                    catch { continue; }
+                    catch { }
 
                     try
                     {
                         output.Add(ParseJson<Car>(obj));
+                        continue;
                     }
-                    catch { continue;  }
+                    catch {}
+
+                    try
+                    {
+                        output.Add(ParseJson<Fallback>(obj));
+                    }
+                    catch
+                    {   
+                        log.LogError($"Entity cannot be serialized into fallback type");
+                        yield break;
+                    }
+                }
+                yield return output;
+
+                if (restJobData.TimeBetweenRequests != 0)
+                {
+                    Thread.Sleep((int)restJobData.TimeBetweenRequests);
                 }
             }
-
-            return output;
         }
 
         public object ParseJson<T>(JObject jsonObj)

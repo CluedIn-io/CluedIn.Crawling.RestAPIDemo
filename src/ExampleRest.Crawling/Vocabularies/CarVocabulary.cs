@@ -19,7 +19,7 @@ namespace CluedIn.Crawling.Rest.Vocabularies
             {
                 Id = group.Add(new VocabularyKey("Id", VocabularyKeyDataType.Identifier, VocabularyKeyVisibility.Visible));
                 PurchaseDate = group.Add(new VocabularyKey("PurchaseDate", VocabularyKeyDataType.DateTime, VocabularyKeyVisibility.Visible));
-                Color = group.Add(new VocabularyKey("Color", VocabularyKeyDataType.Text, VocabularyKeyVisibility.Visible));
+                Color = group.Add(new VocabularyKey("Color", VocabularyKeyDataType.Color, VocabularyKeyVisibility.Visible));
                 Model = group.Add(new VocabularyKey("Model", VocabularyKeyDataType.Text, VocabularyKeyVisibility.Visible));
                 CarMaker = group.Add(new VocabularyKey("CarMaker", VocabularyKeyDataType.Text, VocabularyKeyVisibility.Visible));
                 ModelYear = group.Add(new VocabularyKey("ModelYear", VocabularyKeyDataType.Text, VocabularyKeyVisibility.Visible));

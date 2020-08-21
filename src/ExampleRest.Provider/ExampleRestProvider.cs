@@ -42,12 +42,14 @@ namespace CluedIn.Provider.ExampleRest
 
             if (configuration.ContainsKey(ExampleRestConstants.KeyName.Url))
                 exampleRestCrawlJobData.Url = (string)configuration[ExampleRestConstants.KeyName.Url];
+            if (configuration.ContainsKey(ExampleRestConstants.KeyName.Endpoints))
+                exampleRestCrawlJobData.Endpoints = (configuration[ExampleRestConstants.KeyName.Endpoints] as JArray).ToObject<List<string>>();
             if (configuration.ContainsKey(ExampleRestConstants.KeyName.Token))
                 exampleRestCrawlJobData.Token = (string)configuration[ExampleRestConstants.KeyName.Token];
             if (configuration.ContainsKey(ExampleRestConstants.KeyName.NumRetry))
                 exampleRestCrawlJobData.NumRetry = (long)configuration[ExampleRestConstants.KeyName.NumRetry];
-            if (configuration.ContainsKey(ExampleRestConstants.KeyName.Endpoints))
-                exampleRestCrawlJobData.Endpoints = (configuration[ExampleRestConstants.KeyName.Endpoints] as JArray).ToObject<List<string>>();
+            if (configuration.ContainsKey(ExampleRestConstants.KeyName.TimeBetweenRequests))
+                exampleRestCrawlJobData.TimeBetweenRequests = (long)configuration[ExampleRestConstants.KeyName.TimeBetweenRequests];
 
             return await Task.FromResult(exampleRestCrawlJobData);
         }

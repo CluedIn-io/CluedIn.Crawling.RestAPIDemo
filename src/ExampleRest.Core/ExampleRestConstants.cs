@@ -13,6 +13,7 @@ namespace CluedIn.Crawling.ExampleRest.Core
             public const string Token = nameof(Token);
             public const string Endpoints = nameof(Endpoints);
             public const string NumRetry = nameof(NumRetry);
+            public const string TimeBetweenRequests = nameof(TimeBetweenRequests);
         }
 
         // TODO Complete the following section

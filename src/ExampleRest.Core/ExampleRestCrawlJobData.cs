@@ -9,6 +9,6 @@ namespace CluedIn.Crawling.ExampleRest.Core
         public string Token { get; set; }
         public IEnumerable<string> Endpoints { get; set; }
         public long NumRetry { get; set; } = 1;
-
+        public long TimeBetweenRequests { get; set; }
     }
 }
