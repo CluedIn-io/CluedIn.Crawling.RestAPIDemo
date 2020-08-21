@@ -31,26 +31,26 @@ namespace CluedIn.Crawling.Rest.ClueProducers
 
             var data = clue.Data.EntityData;
 
-            var vocab = new UserVocabulary();
+            if (!string.IsNullOrEmpty(input.Name))
+                data.Name = input.Name;
+
+            if (!string.IsNullOrEmpty(input.Email))
+                data.Aliases.Add(input.Email);
 
             if (!data.OutgoingEdges.Any())
                 _factory.CreateEntityRootReference(clue, EntityEdgeType.PartOf);
 
+            var vocab = new UserVocabulary();
+
             data.Properties[vocab.Id] = input.Id.PrintIfAvailable();
             data.Properties[vocab.Name] = input.Name.PrintIfAvailable();
-            data.Properties[vocab.Username] = input.Username.PrintIfAvailable();
             data.Properties[vocab.Email] = input.Email.PrintIfAvailable();
+            data.Properties[vocab.Gender] = input.Gender.PrintIfAvailable();
             data.Properties[vocab.AddressStreet] = input.AddressStreet.PrintIfAvailable();
-            data.Properties[vocab.AddressSuite] = input.AddressSuite.PrintIfAvailable();
-            data.Properties[vocab.AddressCity] = input.AddressCity.PrintIfAvailable();
             data.Properties[vocab.AddressZipcode] = input.AddressZipcode.PrintIfAvailable();
-            data.Properties[vocab.AddressGeoLat] = input.AddressGeoLat.PrintIfAvailable();
-            data.Properties[vocab.AddressGeoLng] = input.AddressGeoLng.PrintIfAvailable();
-            data.Properties[vocab.Phone] = input.Phone.PrintIfAvailable();
-            data.Properties[vocab.Website] = input.Website.PrintIfAvailable();
-            data.Properties[vocab.CompanyName] = input.CompanyName.PrintIfAvailable();
-            data.Properties[vocab.CompanyCatchPhrase] = input.CompanyCatchPhrase.PrintIfAvailable();
-            data.Properties[vocab.CompanyBs] = input.CompanyBs.PrintIfAvailable();
+            data.Properties[vocab.AddressCity] = input.AddressCity.PrintIfAvailable();
+            data.Properties[vocab.AddressRegion] = input.AddressRegion.PrintIfAvailable();
+            data.Properties[vocab.AddressCountry] = input.AddressCountry.PrintIfAvailable();
 
             return clue;
 

@@ -2,6 +2,7 @@ using CluedIn.Core.Crawling;
 using CluedIn.Crawling;
 using CluedIn.Crawling.ExampleRest;
 using CluedIn.Crawling.ExampleRest.Infrastructure.Factories;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Shouldly;
 using Xunit;
@@ -15,8 +16,9 @@ namespace Crawling.ExampleRest.Unit.Test
         public ExampleRestCrawlerBehaviour()
         {
             var nameClientFactory = new Mock<IExampleRestClientFactory>();
+            var log = new Mock<Logger<ExampleRestCrawler>>();
 
-            _sut = new ExampleRestCrawler(nameClientFactory.Object);
+            _sut = new ExampleRestCrawler(nameClientFactory.Object, log.Object);
         }
 
         [Fact]

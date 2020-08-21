@@ -14,6 +14,7 @@ using CluedIn.Crawling.ExampleRest.Core;
 using CluedIn.Crawling.ExampleRest.Infrastructure.Factories;
 using CluedIn.Providers.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CluedIn.Provider.ExampleRest
 {
@@ -39,20 +40,14 @@ namespace CluedIn.Provider.ExampleRest
 
             var exampleRestCrawlJobData = new ExampleRestCrawlJobData();
 
+            if (configuration.ContainsKey(ExampleRestConstants.KeyName.Url))
+                exampleRestCrawlJobData.Url = (string)configuration[ExampleRestConstants.KeyName.Url];
+            if (configuration.ContainsKey(ExampleRestConstants.KeyName.Token))
+                exampleRestCrawlJobData.Token = (string)configuration[ExampleRestConstants.KeyName.Token];
             if (configuration.ContainsKey(ExampleRestConstants.KeyName.NumRetry))
                 exampleRestCrawlJobData.NumRetry = (long)configuration[ExampleRestConstants.KeyName.NumRetry];
-            if (configuration.ContainsKey(ExampleRestConstants.KeyName.CrawlUsers))
-                exampleRestCrawlJobData.CrawlUsers = (bool) configuration[ExampleRestConstants.KeyName.CrawlUsers];
-            if (configuration.ContainsKey(ExampleRestConstants.KeyName.CrawlTodos))
-                exampleRestCrawlJobData.CrawlTodos = (bool) configuration[ExampleRestConstants.KeyName.CrawlTodos];
-            if (configuration.ContainsKey(ExampleRestConstants.KeyName.CrawlPhotos))
-                exampleRestCrawlJobData.CrawlPhotos = (bool) configuration[ExampleRestConstants.KeyName.CrawlPhotos];
-            if (configuration.ContainsKey(ExampleRestConstants.KeyName.CrawlAlbums))
-                exampleRestCrawlJobData.CrawlAlbums = (bool) configuration[ExampleRestConstants.KeyName.CrawlAlbums];
-            if (configuration.ContainsKey(ExampleRestConstants.KeyName.CrawlComments))
-                exampleRestCrawlJobData.CrawlComments = (bool) configuration[ExampleRestConstants.KeyName.CrawlComments];
-            if (configuration.ContainsKey(ExampleRestConstants.KeyName.CrawlPosts))
-                exampleRestCrawlJobData.CrawlPosts = (bool) configuration[ExampleRestConstants.KeyName.CrawlPosts];
+            if (configuration.ContainsKey(ExampleRestConstants.KeyName.Endpoints))
+                exampleRestCrawlJobData.Endpoints = (configuration[ExampleRestConstants.KeyName.Endpoints] as JArray).ToObject<List<string>>();
 
             return await Task.FromResult(exampleRestCrawlJobData);
         }
@@ -88,14 +83,9 @@ namespace CluedIn.Provider.ExampleRest
             {
                 //TODO add the transformations from specific CrawlJobData object to dictionary
                 // add tests to GetHelperConfigurationBehaviour.cs
+                dictionary.Add(ExampleRestConstants.KeyName.Url, exampleRestCrawlJobData.Url);
+                dictionary.Add(ExampleRestConstants.KeyName.Endpoints, exampleRestCrawlJobData.Endpoints);
                 dictionary.Add(ExampleRestConstants.KeyName.NumRetry, exampleRestCrawlJobData.NumRetry);
-                dictionary.Add(ExampleRestConstants.KeyName.CrawlUsers, exampleRestCrawlJobData.CrawlUsers);
-                dictionary.Add(ExampleRestConstants.KeyName.CrawlTodos, exampleRestCrawlJobData.CrawlTodos);
-                dictionary.Add(ExampleRestConstants.KeyName.CrawlPhotos, exampleRestCrawlJobData.CrawlPhotos);
-                dictionary.Add(ExampleRestConstants.KeyName.CrawlAlbums, exampleRestCrawlJobData.CrawlAlbums);
-                dictionary.Add(ExampleRestConstants.KeyName.CrawlComments, exampleRestCrawlJobData.CrawlComments);
-                dictionary.Add(ExampleRestConstants.KeyName.CrawlPosts, exampleRestCrawlJobData.CrawlPosts);
-
             }
 
             return await Task.FromResult(dictionary);

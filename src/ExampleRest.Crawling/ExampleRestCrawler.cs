@@ -1,18 +1,24 @@
+using System;
 using System.Collections.Generic;
-
 using CluedIn.Core.Crawling;
 using CluedIn.Crawling.ExampleRest.Core;
 using CluedIn.Crawling.ExampleRest.Infrastructure.Factories;
 using CluedIn.Crawling.Rest.Core.Models;
+using CluedIn.Providers.Webhooks.Models;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace CluedIn.Crawling.ExampleRest
 {
     public class ExampleRestCrawler : ICrawlerDataGenerator
     {
         private readonly IExampleRestClientFactory clientFactory;
-        public ExampleRestCrawler(IExampleRestClientFactory clientFactory)
+        private readonly ILogger<ExampleRestCrawler> log;
+
+        public ExampleRestCrawler(IExampleRestClientFactory clientFactory, ILogger<ExampleRestCrawler> log)
         {
             this.clientFactory = clientFactory;
+            this.log = log;
         }
 
         public IEnumerable<object> GetData(CrawlJobData jobData)
@@ -21,21 +27,41 @@ namespace CluedIn.Crawling.ExampleRest
 
             if (!(jobData is ExampleRestCrawlJobData examplerestcrawlJobData))
             {
-                yield break;
+                throw new ArgumentException(nameof(jobData));
             }
 
             var client = clientFactory.CreateNew(examplerestcrawlJobData);
 
-            if (restJobData.CrawlUsers)
+            var output = new List<object>();
+            foreach (var endpoint in restJobData.Endpoints)
             {
-                foreach (var userObj in client.GetData($"/users"))
+                foreach (var obj in client.FetchEndpointData(endpoint))
                 {
-                    yield return new User(userObj);
+                    try
+                    {
+                        output.Add(ParseJson<User>(obj));
+                    }
+                    catch { continue; }
+
+                    try
+                    {
+                        output.Add(ParseJson<Car>(obj));
+                    }
+                    catch { continue;  }
                 }
             }
 
+            return output;
+        }
 
-            
-        }       
+        public object ParseJson<T>(JObject jsonObj)
+        {
+            // Attempt to deserialize
+            var constructor = typeof(T).GetConstructor(new Type[] { typeof(JObject) });
+            var obj = constructor.Invoke(new object[] { jsonObj });
+            log.LogInformation($"Deserialized successfully into type {typeof(T)}");
+            return obj;
+        }
+
     }
 }

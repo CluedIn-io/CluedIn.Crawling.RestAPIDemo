@@ -9,13 +9,10 @@ namespace CluedIn.Crawling.ExampleRest.Core
     {
         public struct KeyName
         {
+            public const string Url = nameof(Url);
+            public const string Token = nameof(Token);
+            public const string Endpoints = nameof(Endpoints);
             public const string NumRetry = nameof(NumRetry);
-            public const string CrawlUsers = nameof(CrawlUsers);
-            public const string CrawlTodos = nameof(CrawlTodos);
-            public const string CrawlPhotos = nameof(CrawlPhotos);
-            public const string CrawlAlbums = nameof(CrawlAlbums);
-            public const string CrawlComments = nameof(CrawlComments);
-            public const string CrawlPosts = nameof(CrawlPosts);
         }
 
         // TODO Complete the following section

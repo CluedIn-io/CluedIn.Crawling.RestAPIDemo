@@ -8,6 +8,7 @@ using RestSharp;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using CluedIn.Core;
 
 namespace CluedIn.Crawling.ExampleRest.Infrastructure
 {
@@ -18,12 +19,11 @@ namespace CluedIn.Crawling.ExampleRest.Infrastructure
     // This class should not contain crawling logic (i.e. in which order things are retrieved)
     public class ExampleRestClient
     {
-        private const string BaseUri = "https://jsonplaceholder.typicode.com";
         private readonly ILogger<ExampleRestClient> log;
         private readonly IRestClient client;
         private readonly long maxTry;
 
-        public ExampleRestClient(ILogger<ExampleRestClient> log, ExampleRestCrawlJobData examplerestCrawlJobData, IRestClient client) // TODO: pass on any extra dependencies
+        public ExampleRestClient(ILogger<ExampleRestClient> log, ExampleRestCrawlJobData examplerestCrawlJobData, IRestClient client)
         {
             if (examplerestCrawlJobData == null)
             {
@@ -37,38 +37,59 @@ namespace CluedIn.Crawling.ExampleRest.Infrastructure
 
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.client = client ?? throw new ArgumentNullException(nameof(client));
-            client.BaseUrl = new Uri(BaseUri);
+            client.BaseUrl = new Uri(examplerestCrawlJobData.Url);
+
+            if (!string.IsNullOrEmpty(examplerestCrawlJobData.Token))
+                client.AddDefaultHeader("x-api-key", examplerestCrawlJobData.Token);
 
             if (examplerestCrawlJobData.NumRetry > 0)
                 maxTry = examplerestCrawlJobData.NumRetry;
             else
                 maxTry = 1;
-
-
         }
 
-        public IEnumerable<JObject> GetData(string url)
+        public IEnumerable<JObject> FetchEndpointData(string endpoint)
         {
-            var request = new RestRequest(url, Method.GET);
+            var request = new RestRequest(endpoint, Method.GET);
             var tryCount = 0;
 
             IRestResponse response = new RestResponse();
             while (tryCount < maxTry)
             {
-                response = client.Execute(request);
+                try
+                {
+                    response = client.Execute(request);
+                }
+                catch (Exception e)
+                {
+                    tryCount++;
+                    var diagnosticMessage = $"Exception encountered: {e.Message}";
+                    log.LogError(diagnosticMessage);
+                    continue;
+                }
+
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     break;
                 }
-
-                var diagnosticMessage = $"Attempt {tryCount}/{maxTry} of request to {client.BaseUrl}{url} failed, response {response.ErrorMessage} ({response.StatusCode})";
-                log.LogError(diagnosticMessage);
-
-                if (tryCount == maxTry)
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    log.LogError($"Reached max number of request failures");
-                    yield break;
+                    // Fetch new token here
+
+                    continue;
                 }
+                else
+                {
+                    tryCount++;
+                    var diagnosticMessage = $"Attempt {tryCount}/{maxTry} of request to {client.BaseUrl}{endpoint} failed, response {response.ErrorMessage} ({response.StatusCode})";
+                    log.LogError(diagnosticMessage);
+                }
+            }
+
+            if (tryCount == maxTry)
+            {
+                log.LogError($"Reached max number of request failures");
+                yield break;
             }
 
             JArray data;
@@ -78,7 +99,7 @@ namespace CluedIn.Crawling.ExampleRest.Infrastructure
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error getting objects from {url}:");
+                Console.WriteLine($"Error getting objects from {endpoint}:");
                 Console.WriteLine(e.Message);
                 Console.WriteLine();
                 yield break;
@@ -94,6 +115,7 @@ namespace CluedIn.Crawling.ExampleRest.Infrastructure
         {
             //TODO - return some unique information about the remote data source
             // that uniquely identifies the account
+            //REst call to the service and get an AccountId
             return new AccountInformation("", "");
         }
     }
